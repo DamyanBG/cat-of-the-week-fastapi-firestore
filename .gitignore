@@ -1,0 +1,5 @@
+.venv
+venv
+.env
+sa-credentials.json
+__pycache__
