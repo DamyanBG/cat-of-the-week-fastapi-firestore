@@ -2,7 +2,6 @@ from enum import Enum
 
 
 class RoleType(str, Enum):
-    voter = "voter"
-    participant = "participant"
+    user = "user"
     admin = "admin"
     moderator = "moderator"

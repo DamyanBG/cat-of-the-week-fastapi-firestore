@@ -13,7 +13,7 @@ user_router = APIRouter(prefix="/users", tags=["users"])
 user_ref = db.collection("Users")
 
 
-@user_router.post("/register-participant", response_model=User)
+@user_router.post("/register", response_model=User)
 async def create_user(user: UserCreate):
     existing_users = user_ref.where("email", "==", user.email).get()
     if existing_users:
@@ -23,7 +23,7 @@ async def create_user(user: UserCreate):
     new_user_ref = user_ref.document()
     user.password = hash_password(user.password)
     user_data = user.model_dump(by_alias=True, exclude_unset=True)
-    user_data["role"] = RoleType.participant
+    user_data["role"] = RoleType.user
     new_user_ref.set(user_data)
     user_data["id"] = new_user_ref.id
 
