@@ -3,3 +3,4 @@ venv
 .env
 sa-credentials.json
 __pycache__
+.idea
