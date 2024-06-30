@@ -24,7 +24,7 @@ async def select_user_by_email(email: str) -> Optional[User]:
 
 
 async def insert_user(user: UserCreate) -> User:
-    user_data = user.model_dump(by_alias=True, exclude_unset=True)
+    user_data = user.model_dump()
     new_user_ref = user_ref.document()
     user_data["role"] = RoleType.user
     await new_user_ref.set(user_data)
