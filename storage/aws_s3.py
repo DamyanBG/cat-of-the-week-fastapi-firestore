@@ -50,7 +50,6 @@ def upload_bytes_image(image_bytes: bytes, image_extension: str, mime_type: str)
 
 
 def generate_presigned_url(file_name: str, expiration: int = 3600) -> str:
-    # Generate a pre-signed URL for the uploaded file
     pre_signed_url = s3_client.generate_presigned_url(
         "get_object",
         Params={"Bucket": AWS_BUCKET_NAME, "Key": file_name},
