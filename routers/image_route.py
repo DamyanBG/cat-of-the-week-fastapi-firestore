@@ -5,7 +5,7 @@ from utils.image_compression import compress_image_to_webp
 from utils.utils import separate_data_url_from_base64
 from storage.google_cloud_storage import upload_bytes_image, generate_signed_url
 from image_recognition.google_vision import check_is_safe_image
-from models.image_model import Image, ImageCreate, ImageResp
+from models.image_model import ImageBase, ImageCreate, ImageResp
 
 images_router = APIRouter(prefix="/images", tags=["images"])
 
@@ -22,10 +22,10 @@ async def create_home(image: ImageCreate):
         raise HTTPException(status_code=400, detail="Image is not safe for work")
 
     img_file_name = upload_bytes_image(image_bytes, ".webp", "image/webp")
+    img_url = generate_signed_url(img_file_name)
     new_image_ref = images_ref.document()
-    new_image_data = {"file_name": img_file_name}
+
+    new_image_data = {"image_url": img_url}
     new_image_ref.set(new_image_data)
     new_image_data["id"] = new_image_ref.id
-    new_image_url = generate_signed_url(img_file_name)
-    new_image_data["url"] = new_image_url
-    return ImageResp(**new_image_data)
+    return new_image_data

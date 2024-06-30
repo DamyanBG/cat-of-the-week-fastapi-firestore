@@ -11,31 +11,36 @@ class BaseCatModel(BaseModel):
     microchip: Optional[str]
     color: Optional[str]
     breed: Optional[str]
-    photo_id: Optional[int]
-
-    class Config:
-        orm_mode = True
+    photo_id: Optional[str]
 
 
 class CatCreate(BaseCatModel):
     pass
 
 
-class CurrentRoundCatSchema(BaseCatModel):
+class CurrentRoundCatModel(BaseCatModel):
     id: str
-    user_id: Optional[int]
+    user_id: Optional[str]
     likes: int = 0
     dislikes: int = 0
     votes: int = 0
 
 
-class NextRoundCatSchema(BaseCatModel):
+class CurrentRoundCatWithPhotoUrl(BaseCatModel):
     id: str
-    user_id: Optional[int]
+    user_id: Optional[str]
+    likes: int = 0
+    dislikes: int = 0
+    votes: int = 0
+    photo_url: str
 
 
-
-class CatOfTheWeekSchema(BaseCatModel):
+class NextRoundCatModel(BaseCatModel):
     id: str
-    user_id: Optional[int]
+    user_id: Optional[str]
+
+
+class CatOfTheWeekModel(BaseCatModel):
+    id: str
+    user_id: Optional[str]
     the_week: Optional[datetime]
