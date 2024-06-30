@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException
 from db import db
 from utils.image_compression import compress_image_to_webp
 from utils.utils import separate_data_url_from_base64
-from storage.google_cloud_storage import upload_bytes_image, generate_signed_url
+from storage.aws_s3 import upload_bytes_image, generate_presigned_url
 from image_recognition.google_vision import check_is_safe_image
 from models.image_model import ImageBase, ImageCreate, ImageResp
 
@@ -22,7 +22,7 @@ async def create_home(image: ImageCreate):
         raise HTTPException(status_code=400, detail="Image is not safe for work")
 
     img_file_name = upload_bytes_image(image_bytes, ".webp", "image/webp")
-    img_url = generate_signed_url(img_file_name)
+    img_url = generate_presigned_url(img_file_name)
     new_image_ref = images_ref.document()
 
     new_image_data = {"image_url": img_url}
