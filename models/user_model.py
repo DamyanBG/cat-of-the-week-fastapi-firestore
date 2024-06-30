@@ -4,8 +4,8 @@ from utils.enums import RoleType
 
 
 class UserBase(BaseModel):
-    first_name: str = Field(...)
-    last_name: str = Field(...)
+    first_name: str = Field(..., description="First name of the user", example="John")
+    last_name: str = Field(..., description="Last name of the user", example="Doe")
     email: EmailStr = Field(...)
     password: str = Field(...)
 

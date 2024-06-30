@@ -4,4 +4,4 @@ from sa import credentials
 from config import DATABASE_NAME
 
 
-db = firestore.Client(credentials=credentials, database=DATABASE_NAME)
+db = firestore.AsyncClient(credentials=credentials, database=DATABASE_NAME)

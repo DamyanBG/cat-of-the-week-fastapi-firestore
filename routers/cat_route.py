@@ -33,15 +33,23 @@ async def get_cat_for_vote(token_data: TokenData = Depends(get_current_user)):
     print(user_id)
     filter_by_user_id = FieldFilter("user_id", "==", user_id)
     user_votes_history_docs = vote_history_ref.where(filter=filter_by_user_id).stream()
-    user_votes_history_cats_ids = {doc.to_dict()['cat_pk'] for doc in user_votes_history_docs}
+    user_votes_history_cats_ids = {
+        doc.to_dict()["cat_pk"] for doc in user_votes_history_docs
+    }
     print("user_votes_history_cats_ids")
     print(user_votes_history_cats_ids)
     if user_votes_history_cats_ids:
-        current_round_cats_query = current_round_cat_ref.where("id", 'not-in', list(user_votes_history_cats_ids))
-        current_round_cats_docs = current_round_cats_query.order_by('votes').limit(1).stream()
+        current_round_cats_query = current_round_cat_ref.where(
+            "id", "not-in", list(user_votes_history_cats_ids)
+        )
+        current_round_cats_docs = (
+            current_round_cats_query.order_by("votes").limit(1).stream()
+        )
     else:
-        current_round_cats_docs = current_round_cat_ref.order_by('votes').limit(1).stream()
-    
+        current_round_cats_docs = (
+            current_round_cat_ref.order_by("votes").limit(1).stream()
+        )
+
     print("current_round_cats_docs")
     print(current_round_cats_docs)
     cat_for_vote_doc = next(current_round_cats_docs, None)
@@ -61,5 +69,5 @@ async def get_cat_for_vote(token_data: TokenData = Depends(get_current_user)):
     print(photo_doc)
     cat_for_vote["photo_url"] = photo_data["image_url"]
     print(cat_for_vote)
-    
+
     return cat_for_vote
