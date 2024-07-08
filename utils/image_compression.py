@@ -31,5 +31,5 @@ def compress_image_to_webp(
 
         return image_data
 
-    except (Error, Image.UnidentifiedImageError) as e:  
+    except (Error, Image.UnidentifiedImageError) as e:
         raise ValueError("Invalid image data or format") from e

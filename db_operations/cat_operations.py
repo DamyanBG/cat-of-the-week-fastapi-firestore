@@ -1,4 +1,3 @@
-from google.cloud.firestore import FieldFilter
 from google.cloud.exceptions import NotFound
 
 from db import db
@@ -19,21 +18,17 @@ async def create_next_round_cat(cat_data: CatCreate, user_id: str) -> NextRoundC
 
 
 async def select_not_voted_cat(voted_cats_ids: list[str]) -> CurrentRoundCatModel:
-    if voted_cats_ids:
-        field_filter = FieldFilter("id", "not-in", list(voted_cats_ids))
-        query = (
-            current_round_cat_ref.where(filter=field_filter).order_by("votes").limit(1)
-        )
-    else:
-        query = current_round_cat_ref.order_by("votes").limit(1)
+    all_cats_docs = [doc async for doc in current_round_cat_ref.stream()]
+    all_cats = [
+        CurrentRoundCatModel(id=cat_doc.id, **cat_doc.to_dict())
+        for cat_doc in all_cats_docs
+    ]
+    filtered_cats = [cat for cat in all_cats if cat.id not in voted_cats_ids]
 
-    docs = [doc async for doc in query.stream()]
-    if not docs:
+    if not filtered_cats:
         raise NotFound("No cat for vote")
 
-    not_voted_cat_doc = docs[0]
-    not_voted_cat_dict = not_voted_cat_doc.to_dict()
-    not_voted_cat_dict["id"] = not_voted_cat_doc.id
+    sorted_cats = sorted(filtered_cats, key=lambda cat: cat.votes)
+    cat_for_vote = sorted_cats[0]
 
-    not_voted_cat = CurrentRoundCatModel(**not_voted_cat_dict)
-    return not_voted_cat
+    return cat_for_vote

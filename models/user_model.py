@@ -22,6 +22,10 @@ class UserUpdate(UserBase):
     pass
 
 
+class UserId(BaseModel):
+    id: str
+
+
 class User(UserBase):
     id: str
     role: RoleType = Field(...)
