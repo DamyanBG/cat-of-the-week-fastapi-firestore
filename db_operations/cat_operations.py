@@ -21,7 +21,9 @@ async def create_next_round_cat(cat_data: CatCreate, user_id: str) -> NextRoundC
 async def select_not_voted_cat(voted_cats_ids: list[str]) -> CurrentRoundCatModel:
     if voted_cats_ids:
         field_filter = FieldFilter("id", "not-in", list(voted_cats_ids))
-        query = current_round_cat_ref.where(filter=field_filter).order_by("votes").limit(1)
+        query = (
+            current_round_cat_ref.where(filter=field_filter).order_by("votes").limit(1)
+        )
     else:
         query = current_round_cat_ref.order_by("votes").limit(1)
 

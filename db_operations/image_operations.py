@@ -1,6 +1,5 @@
-from google.cloud.firestore import FieldFilter
-
 from db import db
+from models.image_model import Image, ImageFileName
 
 image_ref = db.collection("Images")
 
@@ -10,3 +9,12 @@ async def select_image_url_by_id(image_id: str) -> str:
     image_dict = image_doc.to_dict()
     image_url = image_dict["image_url"]
     return image_url
+
+
+async def insert_image(image_file_name: ImageFileName) -> Image:
+    new_image_ref = image_ref.document()
+    image_data_dict = image_file_name.model_dump()
+    await new_image_ref.set(image_data_dict)
+    image_data_dict["id"] = new_image_ref.id
+    image = Image(**image_data_dict)
+    return image

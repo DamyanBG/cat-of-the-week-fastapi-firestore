@@ -3,12 +3,24 @@ from pydantic import Field, BaseModel
 
 class ImageBase(BaseModel):
     id: str = Field(..., description="Unique identifier for the image")
-    image_url: str = Field(..., description="URL where the image is stored")
+    file_name: str = Field(..., description="URL where the image is stored")
 
 
-class ImageCreate(BaseModel):
+class ImageBase64(BaseModel):
     photo_base64: str = Field(...)
 
 
-class ImageResp(ImageBase):
+class Image(ImageBase):
+    pass
+
+
+class ImageUrl(BaseModel):
+    image_url: str
+
+
+class ImageFileName(BaseModel):
+    file_name: str
+
+
+class ImageWithUrl(Image, ImageUrl):
     pass
