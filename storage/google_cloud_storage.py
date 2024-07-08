@@ -1,14 +1,14 @@
 from tempfile import TemporaryDirectory
 from uuid import uuid4
 from datetime import timedelta, datetime, UTC
-from google.cloud import storage
+from google.cloud.storage import Client
 from google.cloud.storage.blob import Blob
 
 from sa import credentials
 from config import BUCKET_NAME
 
 
-client = storage.Client(credentials=credentials)
+client = Client(credentials=credentials)
 
 
 def upload_bytes_image(image_bytes: bytes, image_extension: str, mime_type: str) -> str:

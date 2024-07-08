@@ -1,12 +1,12 @@
-from google.cloud import vision
+from google.cloud.vision import ImageAnnotatorClient, Image
 
 from sa import credentials
 
 
 def check_is_safe_image(image_content: bytes) -> bool:
     """Uses the Cloud Vision API to check if an image is safe for work (SFW)."""
-    client = vision.ImageAnnotatorClient(credentials=credentials)
-    image = vision.Image(content=image_content)
+    client = ImageAnnotatorClient(credentials=credentials)
+    image = Image(content=image_content)
 
     response = client.safe_search_detection(image=image)
     safe = response.safe_search_annotation

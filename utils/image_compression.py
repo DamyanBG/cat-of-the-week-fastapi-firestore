@@ -1,7 +1,7 @@
 from PIL import Image
-import io
-import base64
-import binascii
+from io import BytesIO
+from base64 import b64decode
+from binascii import Error
 
 
 def compress_image_to_webp(
@@ -19,17 +19,17 @@ def compress_image_to_webp(
     """
     file_type = "webp"
     try:
-        image_data = base64.b64decode(base64_image)
+        image_data = b64decode(base64_image)
 
         if len(image_data) > max_size:
-            img = Image.open(io.BytesIO(image_data))
+            img = Image.open(BytesIO(image_data))
 
-            buffer = io.BytesIO()
+            buffer = BytesIO()
             img.save(buffer, format=file_type, lossless=False, quality=quality)
             buffer.seek(0)
             image_data = buffer.read()
 
         return image_data
 
-    except (binascii.Error, Image.UnidentifiedImageError) as e:  # Catch binascii.Error
+    except (Error, Image.UnidentifiedImageError) as e:  
         raise ValueError("Invalid image data or format") from e
