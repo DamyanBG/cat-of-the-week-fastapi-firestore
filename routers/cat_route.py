@@ -2,9 +2,10 @@ from fastapi import APIRouter, Depends
 
 from db_operations.cat_operations import create_next_round_cat, select_not_voted_cat
 from db_operations.vote_operations import select_user_voted_cats_ids
-from db_operations.image_operations import select_image_url_by_id
+from db_operations.image_operations import select_image_file_name_by_id
 from models.cat_model import CatCreate, NextRoundCatModel, CurrentRoundCatWithPhotoUrl
 from auth.token import get_current_user, TokenData
+from storage.google_cloud_storage import generate_signed_url
 
 
 cats_router = APIRouter(prefix="/cats", tags=["cats"])
@@ -21,7 +22,8 @@ async def get_cat_for_vote(token_data: TokenData = Depends(get_current_user)):
     user_id = token_data.id
     user_votes_history_cats_ids = await select_user_voted_cats_ids(user_id)
     cat_for_vote = await select_not_voted_cat(user_votes_history_cats_ids)
-    cat_image_url = await select_image_url_by_id(cat_for_vote.photo_id)
+    cat_image_file_name = await select_image_file_name_by_id(cat_for_vote.photo_id)
+    cat_image_url = generate_signed_url(cat_image_file_name)
     cat_for_vote_with_image = CurrentRoundCatWithPhotoUrl(
         **{"photo_url": cat_image_url}, **cat_for_vote.model_dump()
     )

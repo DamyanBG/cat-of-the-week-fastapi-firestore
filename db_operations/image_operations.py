@@ -4,11 +4,11 @@ from models.image_model import Image, ImageFileName
 image_ref = db.collection("Images")
 
 
-async def select_image_url_by_id(image_id: str) -> str:
+async def select_image_file_name_by_id(image_id: str) -> str:
     image_doc = await image_ref.document(image_id).get()
     image_dict = image_doc.to_dict()
-    image_url = image_dict["image_url"]
-    return image_url
+    file_name = image_dict["file_name"]
+    return file_name
 
 
 async def insert_image(image_file_name: ImageFileName) -> Image:
