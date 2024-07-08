@@ -1,7 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from google.cloud.exceptions import NotFound
 
-from db_operations.cat_operations import create_next_round_cat, select_not_voted_cat
+from db_operations.cat_operations import (
+    create_next_round_cat,
+    select_not_voted_cat,
+    select_cat_by_user_id,
+)
 from db_operations.vote_operations import select_user_voted_cats_ids
 from db_operations.image_operations import select_image_file_name_by_id
 from models.cat_model import CatCreate, NextRoundCatModel, CurrentRoundCatWithPhotoUrl
@@ -15,6 +19,10 @@ cats_router = APIRouter(prefix="/cats", tags=["cats"])
 
 @cats_router.post("/create", response_model=NextRoundCatModel)
 async def post_cat(cat: CatCreate, user_id: UserId = Depends(get_current_user)):
+    existing_cat = await select_cat_by_user_id(user_id.id)
+    if existing_cat:
+        raise HTTPException(status_code=400, detail="You already uploaded a cat!")
+
     next_round_cat = await create_next_round_cat(cat, user_id.id)
     return next_round_cat
 

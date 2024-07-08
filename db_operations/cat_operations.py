@@ -1,10 +1,24 @@
+from typing import Optional
 from google.cloud.exceptions import NotFound
+from google.cloud.firestore import FieldFilter
 
 from db import db
 from models.cat_model import CatCreate, NextRoundCatModel, CurrentRoundCatModel
 
 next_round_cat_ref = db.collection("NextRoundCats")
 current_round_cat_ref = db.collection("CurrentRoundCats")
+
+
+async def select_cat_by_user_id(user_id: str) -> Optional[NextRoundCatModel]:
+    filter_field = FieldFilter("user_id", "==", user_id)
+    query = next_round_cat_ref.where(filter=filter_field)
+    docs = [doc async for doc in query.stream()]
+    if not docs:
+        return None
+
+    cat_doc = docs[0]
+    cat = NextRoundCatModel(id=cat_doc.id, **cat_doc.to_dict())
+    return cat
 
 
 async def create_next_round_cat(cat_data: CatCreate, user_id: str) -> NextRoundCatModel:
