@@ -1,29 +1,19 @@
 from fastapi import APIRouter, Depends
 from google.cloud.firestore import FieldFilter
-from google.cloud.firestore_v1.field_path import FieldPath
-from google.api_core.exceptions import InvalidArgument
 
-from db import db
+from db_operations.cat_operations import create_next_round_cat
 from models.cat_model import CatCreate, NextRoundCatModel, CurrentRoundCatWithPhotoUrl
 from auth.token import get_current_user, TokenData
 
 
 cats_router = APIRouter(prefix="/cats", tags=["cats"])
 
-cat_ref = db.collection("NextRoundCats")
-current_round_cat_ref = db.collection("CurrentRoundCats")
-vote_history_ref = db.collection("VoteHistory")
-image_ref = db.collection("Images")
 
 
 @cats_router.post("/create", response_model=NextRoundCatModel)
-async def create_cat(cat: CatCreate, token_data: TokenData = Depends(get_current_user)):
-    new_cat_ref = cat_ref.document()
-    cat_data = cat.model_dump(by_alias=True, exclude_unset=True)
-    cat_data["user_id"] = token_data.id
-    new_cat_ref.set(cat_data)
-    cat_data["id"] = new_cat_ref.id
-    return cat_data
+async def post_cat(cat: CatCreate, token_data: TokenData = Depends(get_current_user)):
+    next_round_cat = await create_next_round_cat(cat, token_data.id)
+    return next_round_cat
 
 
 @cats_router.get("/cat-for-vote", response_model=CurrentRoundCatWithPhotoUrl)
