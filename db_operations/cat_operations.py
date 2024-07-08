@@ -1,6 +1,6 @@
 from typing import Optional
 from google.cloud.exceptions import NotFound
-from google.cloud.firestore import FieldFilter
+from google.cloud.firestore import FieldFilter, Increment
 
 from db import db
 from models.cat_model import CatCreate, NextRoundCatModel, CurrentRoundCatModel
@@ -46,3 +46,13 @@ async def select_not_voted_cat(voted_cats_ids: list[str]) -> CurrentRoundCatMode
     cat_for_vote = sorted_cats[0]
 
     return cat_for_vote
+
+
+async def add_like(cat_id: str) -> None:
+    cat_doc_ref = current_round_cat_ref.document(cat_id)
+    await cat_doc_ref.update({"likes": Increment(1), "votes": Increment(1)})
+
+
+async def add_dislike(cat_id: str) -> None:
+    cat_doc_ref = current_round_cat_ref.document(cat_id)
+    await cat_doc_ref.update({"dislikes": Increment(1), "votes": Increment(1)})
