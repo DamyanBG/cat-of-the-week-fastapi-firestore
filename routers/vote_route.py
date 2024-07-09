@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends
 
 from models.vote_models import VoteCreate, VoteHistory, VoteHistoryCreate
 from models.user_model import UserId
-from db_operations.vote_operations import insert_vote_history
-from db_operations.cat_operations import add_dislike, add_like
+from queries.vote_queries import insert_vote_history
+from queries.cat_queries import add_dislike, add_like
 from auth.token import get_current_user
 from utils.enums import VoteEnum
 

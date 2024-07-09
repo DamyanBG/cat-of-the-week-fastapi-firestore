@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from db_operations.image_operations import insert_image
+from queries.image_queries import insert_image
 from utils.image_compression import compress_image_to_webp
 from utils.utils import separate_data_url_from_base64
 from storage.google_cloud_storage import upload_bytes_image, generate_signed_url

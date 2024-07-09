@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from google.cloud.exceptions import NotFound
 
-from db_operations.cat_operations import (
+from queries.cat_queries import (
     create_next_round_cat,
     select_not_voted_cat,
     select_cat_by_user_id,
 )
-from db_operations.vote_operations import select_user_voted_cats_ids
-from db_operations.image_operations import select_image_file_name_by_id
+from queries.vote_queries import select_user_voted_cats_ids
+from queries.image_queries import select_image_file_name_by_id
 from models.cat_model import CatCreate, NextRoundCatModel, CurrentRoundCatWithPhotoUrl
 from models.user_model import UserId
 from auth.token import get_current_user
@@ -43,3 +43,8 @@ async def get_cat_for_vote(user_id: UserId = Depends(get_current_user)):
     cat_for_vote_with_image
 
     return cat_for_vote_with_image
+
+
+@cats_router.get("/cat-of-the-week")
+async def get_cat_of_the_week():
+    pass

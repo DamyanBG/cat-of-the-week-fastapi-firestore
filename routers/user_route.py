@@ -4,7 +4,7 @@ from models.user_model import User, UserCreate
 from models.login_model import LoginRequestModel, LoginResponseModel
 from auth.password import hash_password, check_hashed_password
 from auth.token import create_access_token
-from db_operations.user_operations import select_user_by_email, insert_user
+from queries.user_queries import select_user_by_email, insert_user
 
 user_router = APIRouter(prefix="/users", tags=["users"])
 
