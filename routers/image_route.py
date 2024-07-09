@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 
 from queries.image_queries import insert_image
 from utils.image_compression import compress_image_to_webp
@@ -10,7 +10,7 @@ from models.image_model import ImageFileName, ImageBase64, ImageWithUrl
 images_router = APIRouter(prefix="/images", tags=["images"])
 
 
-@images_router.post("/upload", response_model=ImageWithUrl)
+@images_router.post("/upload", response_model=ImageWithUrl, status_code=status.HTTP_201_CREATED)
 async def post_image(image: ImageBase64):
     data = image.model_dump()
     base64_data = data["photo_base64"]
