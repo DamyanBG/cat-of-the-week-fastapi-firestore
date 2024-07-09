@@ -14,6 +14,7 @@ from models.cat_model import (
     NextRoundCatModel,
     CurrentRoundCatWithPhotoUrl,
     CatOfTheWeekWithImage,
+    NextRoundCatWithImage,
 )
 from models.user_model import UserId
 from auth.token import get_current_user
@@ -60,3 +61,15 @@ async def get_cat_of_the_week():
         image_url=cat_image_url, **cat_of_the_week.model_dump()
     )
     return cat_with_image
+
+
+@cats_router.get("/user-cat", response_model=NextRoundCatWithImage)
+async def get_user_cat(user_id: UserId = Depends(get_current_user)):
+    user_cat = await select_cat_by_user_id(user_id.id)
+    cat_image_file_name = await select_image_file_name_by_id(user_cat.photo_id)
+    cat_image_url = generate_signed_url(cat_image_file_name)
+    user_cat_with_image = NextRoundCatWithImage(
+        image_url=cat_image_url, **user_cat.model_dump()
+    )
+
+    return user_cat_with_image

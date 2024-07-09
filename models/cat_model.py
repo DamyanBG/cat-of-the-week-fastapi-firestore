@@ -40,6 +40,10 @@ class NextRoundCatModel(BaseCatModel):
     user_id: Optional[str]
 
 
+class NextRoundCatWithImage(NextRoundCatModel):
+    image_url: str
+
+
 class CatOfTheWeekBase(BaseCatModel):
     user_id: str
     week_number: int
