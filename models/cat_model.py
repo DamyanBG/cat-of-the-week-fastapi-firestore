@@ -40,7 +40,22 @@ class NextRoundCatModel(BaseCatModel):
     user_id: Optional[str]
 
 
-class CatOfTheWeekModel(BaseCatModel):
+class CatOfTheWeekBase(BaseCatModel):
+    user_id: str
+    week_number: int
+    year: int
+    likes: int
+    dislikes: int
+    votes: int
+
+
+class CatOfTheWeekModel(CatOfTheWeekBase):
     id: str
-    user_id: Optional[str]
-    the_week: Optional[datetime]
+
+
+class CatOfTheWeekWithImage(CatOfTheWeekModel):
+    image_url: str
+
+
+class CatOfTheWeekCreate(CatOfTheWeekBase):
+    pass

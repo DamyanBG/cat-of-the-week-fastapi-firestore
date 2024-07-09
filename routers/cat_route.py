@@ -5,10 +5,16 @@ from queries.cat_queries import (
     create_next_round_cat,
     select_not_voted_cat,
     select_cat_by_user_id,
+    select_cat_of_the_week,
 )
 from queries.vote_queries import select_user_voted_cats_ids
 from queries.image_queries import select_image_file_name_by_id
-from models.cat_model import CatCreate, NextRoundCatModel, CurrentRoundCatWithPhotoUrl
+from models.cat_model import (
+    CatCreate,
+    NextRoundCatModel,
+    CurrentRoundCatWithPhotoUrl,
+    CatOfTheWeekWithImage,
+)
 from models.user_model import UserId
 from auth.token import get_current_user
 from storage.google_cloud_storage import generate_signed_url
@@ -45,6 +51,12 @@ async def get_cat_for_vote(user_id: UserId = Depends(get_current_user)):
     return cat_for_vote_with_image
 
 
-@cats_router.get("/cat-of-the-week")
+@cats_router.get("/cat-of-the-week", response_model=CatOfTheWeekWithImage)
 async def get_cat_of_the_week():
-    pass
+    cat_of_the_week = await select_cat_of_the_week()
+    cat_image_file_name = await select_image_file_name_by_id(cat_of_the_week.photo_id)
+    cat_image_url = generate_signed_url(cat_image_file_name)
+    cat_with_image = CatOfTheWeekWithImage(
+        image_url=cat_image_url, **cat_of_the_week.model_dump()
+    )
+    return cat_with_image

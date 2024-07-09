@@ -1,12 +1,41 @@
 from typing import Optional
 from google.cloud.exceptions import NotFound
 from google.cloud.firestore import FieldFilter, Increment
+from datetime import date
 
 from db import db
-from models.cat_model import CatCreate, NextRoundCatModel, CurrentRoundCatModel
+from models.cat_model import (
+    CatCreate,
+    NextRoundCatModel,
+    CurrentRoundCatModel,
+    CatOfTheWeekModel,
+)
 
 next_round_cat_ref = db.collection("NextRoundCats")
 current_round_cat_ref = db.collection("CurrentRoundCats")
+cat_of_the_week_ref = db.collection("CatsOfTheWeeks")
+
+
+def get_current_week_and_year():
+    today = date.today()
+    year, week_number, _ = today.isocalendar()
+    return week_number, year
+
+
+async def select_cat_of_the_week() -> Optional[CatOfTheWeekModel]:
+    week_number, year = get_current_week_and_year()
+
+    filter_week = FieldFilter("week_number", "==", week_number)
+    filter_year = FieldFilter("year", "==", year)
+    query = cat_of_the_week_ref.where(filter=filter_week).where(filter=filter_year)
+
+    docs = [doc async for doc in query.stream()]
+    if not docs:
+        return None
+
+    cat_doc = docs[0]
+    cat = CatOfTheWeekModel(id=cat_doc.id, **cat_doc.to_dict())
+    return cat
 
 
 async def select_cat_by_user_id(user_id: str) -> Optional[NextRoundCatModel]:
