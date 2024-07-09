@@ -5,6 +5,7 @@ from models.login_model import LoginRequestModel, LoginResponseModel
 from auth.password import hash_password, check_hashed_password
 from auth.token import create_access_token
 from queries.user_queries import select_user_by_email, insert_user
+from queries.cat_queries import select_cat_by_user_id
 
 user_router = APIRouter(prefix="/users", tags=["users"])
 
@@ -37,5 +38,8 @@ async def login_user(credentials: LoginRequestModel):
         )
 
     token = create_access_token(existing_user)
+    user_cat = await select_cat_by_user_id(existing_user.id)
 
-    return {"token": token}
+    has_uploaded_cat = bool(user_cat)
+
+    return {"token": token, "has_uploaded_cat": has_uploaded_cat}

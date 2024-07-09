@@ -10,7 +10,9 @@ from models.image_model import ImageFileName, ImageBase64, ImageWithUrl
 images_router = APIRouter(prefix="/images", tags=["images"])
 
 
-@images_router.post("/upload", response_model=ImageWithUrl, status_code=status.HTTP_201_CREATED)
+@images_router.post(
+    "/upload", response_model=ImageWithUrl, status_code=status.HTTP_201_CREATED
+)
 async def post_image(image: ImageBase64):
     data = image.model_dump()
     base64_data = data["photo_base64"]

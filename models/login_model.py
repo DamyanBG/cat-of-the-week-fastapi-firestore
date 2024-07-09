@@ -8,3 +8,4 @@ class LoginRequestModel(BaseModel):
 
 class LoginResponseModel(BaseModel):
     token: str
+    has_uploaded_cat: bool

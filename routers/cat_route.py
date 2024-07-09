@@ -24,7 +24,9 @@ from storage.google_cloud_storage import generate_signed_url
 cats_router = APIRouter(prefix="/cats", tags=["cats"])
 
 
-@cats_router.post("/create", response_model=NextRoundCatModel, status_code=status.HTTP_201_CREATED)
+@cats_router.post(
+    "/create", response_model=NextRoundCatModel, status_code=status.HTTP_201_CREATED
+)
 async def post_cat(cat: CatCreate, user_id: UserId = Depends(get_current_user)):
     existing_cat = await select_cat_by_user_id(user_id.id)
     if existing_cat:
