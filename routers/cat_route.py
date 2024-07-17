@@ -1,3 +1,4 @@
+from typing import Union
 from fastapi import APIRouter, Depends, HTTPException, status
 from google.cloud.exceptions import NotFound
 
@@ -36,14 +37,14 @@ async def post_cat(cat: CatCreate, user_id: UserId = Depends(get_current_user)):
     return next_round_cat
 
 
-@cats_router.get("/cat-for-vote", response_model=CurrentRoundCatWithPhotoUrl)
+@cats_router.get("/cat-for-vote", response_model=Union[CurrentRoundCatWithPhotoUrl, dict[str, str]])
 async def get_cat_for_vote(user_id: UserId = Depends(get_current_user)):
     user_id = user_id.id
     user_votes_history_cats_ids = await select_user_voted_cats_ids(user_id)
     try:
         cat_for_vote = await select_not_voted_cat(user_votes_history_cats_ids)
     except NotFound:
-        raise HTTPException(status_code=404, detail="Cat not found!")
+        return {"message": "No cat for vote!"}
     cat_image_file_name = await select_image_file_name_by_id(cat_for_vote.photo_id)
     cat_image_url = generate_signed_url(cat_image_file_name)
     cat_for_vote_with_image = CurrentRoundCatWithPhotoUrl(
