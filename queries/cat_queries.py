@@ -2,13 +2,16 @@ from typing import Optional
 from google.cloud.exceptions import NotFound
 from google.cloud.firestore import FieldFilter, Increment
 from datetime import date
+from asyncio import gather
 
 from db import db
 from models.cat_model import (
     CatCreate,
     NextRoundCatModel,
     CurrentRoundCatModel,
+    CurrentRoundCatCreate,
     CatOfTheWeekModel,
+    CatOfTheWeekCreate,
 )
 
 next_round_cat_ref = db.collection("NextRoundCats")
@@ -85,3 +88,19 @@ async def add_like(cat_id: str) -> None:
 async def add_dislike(cat_id: str) -> None:
     cat_doc_ref = current_round_cat_ref.document(cat_id)
     await cat_doc_ref.update({"dislikes": Increment(1), "votes": Increment(1)})
+
+
+async def insert_current_round_cats(cats: list[CurrentRoundCatCreate]) -> None:
+    cats_dicts = [cat.model_dump() for cat in cats]
+    new_cats_refs = [current_round_cat_ref.document() for _ in range(len(cats_dicts))]
+    insert_operations = [
+        new_cat_ref.set(cat_dict)
+        for cat_dict, new_cat_ref in zip(cats_dicts, new_cats_refs)
+    ]
+    await gather(*insert_operations)
+
+
+async def insert_cat_of_the_week(cat_of_the_week: CatOfTheWeekCreate) -> None:
+    cat_of_the_week_dict = cat_of_the_week.model_dump()
+    new_cotw_ref = cat_of_the_week_ref.document()
+    await new_cotw_ref.set(cat_of_the_week_dict)

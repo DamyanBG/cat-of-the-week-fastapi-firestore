@@ -1,0 +1,23 @@
+[
+    {
+        "name": "Whiskers",
+        "color": "Black",
+        "breed": "Siamese",
+        "birth_date": "2020-01-01",
+        "microchip": "123456789"
+    },
+    {
+        "name": "Paws",
+        "color": "White",
+        "breed": "Persian",
+        "birth_date": "2019-03-15",
+        "microchip": "987654321"
+    },
+    {
+        "name": "Fluffy",
+        "color": "Grey",
+        "breed": "Maine Coon",
+        "birth_date": "2018-07-22",
+        "microchip": "456789123"
+    }
+]

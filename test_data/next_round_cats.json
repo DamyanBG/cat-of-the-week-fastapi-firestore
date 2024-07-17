@@ -1,0 +1,10 @@
+[
+    {
+        "name": "Mittens",
+        "user_id": "bob.brown@example.com",
+        "color": "Orange",
+        "breed": "Tabby",
+        "birth_date": "2021-11-05",
+        "microchip": "321654987"
+    }
+]

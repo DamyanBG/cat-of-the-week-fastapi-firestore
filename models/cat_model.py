@@ -18,6 +18,17 @@ class CatCreate(BaseCatModel):
     pass
 
 
+class CurrentRoundCatBase(BaseCatModel):
+    user_id: Optional[str]
+    likes: int = 0
+    dislikes: int = 0
+    votes: int = 0
+
+
+class CurrentRoundCatCreate(CurrentRoundCatBase):
+    pass
+
+
 class CurrentRoundCatModel(BaseCatModel):
     id: str
     user_id: Optional[str]

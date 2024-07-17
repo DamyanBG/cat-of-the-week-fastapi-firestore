@@ -6,7 +6,7 @@ from binascii import Error
 
 def compress_image_to_webp(
     base64_image: str, max_size: int = 200 * 1024, quality: int = 85
-) -> tuple[bytes, str]:
+) -> bytes:
     """Compresses a Base64-encoded image to WebP format if it exceeds the max size.
 
     Args:
